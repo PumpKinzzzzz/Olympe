@@ -33,11 +33,16 @@ contract OlympeVoting is AccessControl {
 
     function createProposal(string memory _description, string[] memory _choices) public onlyRole(ADMIN_ROLE) {
         proposalCounter++;
-        Choice[] memory choicesList = new Choice[](_choices.length);
+
+        Proposal storage newProposal = proposals[proposalCounter];
+        newProposal.id = proposalCounter;
+        newProposal.description = _description;
+        newProposal.open = true;
+
         for (uint i = 0; i < _choices.length; i++) {
-            choicesList[i] = Choice(_choices[i], 0);
+            newProposal.choices.push(Choice(_choices[i], 0));
         }
-        proposals[proposalCounter] = Proposal(proposalCounter, _description, choicesList, true);
+
         emit ProposalCreated(proposalCounter, _description);
     }
 
